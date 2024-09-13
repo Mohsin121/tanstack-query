@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GreyVen App</title>
+</head>
+<body>
+    <h5>Opening GreyVen App...</h5>
+
+    <script>
+        function getReelIdFromQuery() {
+            const queryString = window.location.search;
+            const urlParams = new URLSearchParams(queryString);
+            return urlParams.get('reelid');
+        }
+
+        function redirectToApp() {
+            const reelId = getReelIdFromQuery();
+            const appScheme = `greyvenapp://reel/${reelId}`;
+            const fallbackUrl = 'https://play.google.com/store/apps/details?id=com.yourapp';
+            
+            window.location.href = appScheme; // Attempt to open the app
+
+            const userAgent = navigator.userAgent;
+            let timeoutDuration;
+
+            if (userAgent.match(/chrome|chromium|crios/i)) {
+                timeoutDuration = 10000; // 10 seconds for Chrome
+            } else if (userAgent.match(/safari/i) && !userAgent.match(/chrome|chromium|crios/i)) {
+                timeoutDuration = 1000; 
+            } else {
+                timeoutDuration = 2000; // Default timeout for other browsers
+            }
+
+            setTimeout(function() {
+                window.location.href = fallbackUrl; // Redirect to the fallback URL if the app does not open
+            }, timeoutDuration);
+
+         
+        }
+
+        window.onload = redirectToApp;
+
+    </script>
+</body>
+</html>
